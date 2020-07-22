@@ -23,8 +23,10 @@ def resnet101(classes=classes):
 	    x = conv_block(x, 64, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
 	    x1 = conv_block(x, 256, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
 	    
-	    shortcut = conv_block(base, 256, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'4')
+	    x = Conv2D(256, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
+	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
+	    base = Activation('relu', name='act'+name)(base)
 
 	print('Stage 1:', base.shape)
 	    
@@ -35,8 +37,10 @@ def resnet101(classes=classes):
 	    x = conv_block(x, 128, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
 	    x1 = conv_block(x, 512, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
 	    
-	    shortcut = conv_block(base, 512, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'4')
+	    x = Conv2D(512, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
+	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
+	    base = Activation('relu', name='act'+name)(base)
 
 	print('Stage 2:', base.shape)
 	    
@@ -66,8 +70,10 @@ def resnet101(classes=classes):
 	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'21')
 	    x1 = conv_block(x, 1024, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'22')
 	    
-	    shortcut = conv_block(base, 1024, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'23')
+	    x = Conv2D(1024, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
+	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
+	    base = Activation('relu', name='act'+name)(base)
 
 	print('Stage 3:', base.shape)
 
@@ -78,8 +84,10 @@ def resnet101(classes=classes):
 	    x = conv_block(x, 512, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
 	    x1 = conv_block(x, 2048, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
 	    
-	    shortcut = conv_block(base, 2048, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'4')
+	    x = Conv2D(2048, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
+	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
+	    base = Activation('relu', name='act'+name)(base)
 
 	print('Stage 4:', base.shape)
 
