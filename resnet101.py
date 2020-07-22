@@ -9,7 +9,7 @@ def conv_block(base, filters, kernel_size, padding, strides, name):
     x = Activation('relu', name='act'+name)(x)
     return x
 
-def resnet50(classes=classes):
+def resnet101(classes=classes):
 	inp = Input(shape=(224,224,3), name='input_layer')
 	x = Conv2D(64, kernel_size=(7,7), padding='valid', strides=(2,2), activation='relu', name='conv_0')(inp)
 	base = MaxPool2D(pool_size=(3,3), strides=(2,2), name='maxpool_0')(x)
@@ -40,19 +40,38 @@ def resnet50(classes=classes):
 
 	print('Stage 2:', base.shape)
 	    
-	# Stage (6 cnv_blocks)
-	names = ['_3_a', '_3_b', '_3_c', '_3_d', '_3_e', '_3_f']
+	# Stage 3 (23 conv_blocks)
+	names = ['_3'+'_'+alpha for alpha in list('abcdefghijklmnopqrstuv')]
 	for n in names:
 	    x = conv_block(base, 256, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'1')
 	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
-	    x1 = conv_block(x, 1024, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'3')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'4')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'5')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'6')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'7')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'8')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'9')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'10')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'11')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'12')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'13')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'14')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'15')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'16')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'17')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'18')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'19')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'20')
+	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'21')
+	    x1 = conv_block(x, 1024, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'22')
 	    
-	    shortcut = conv_block(base, 1024, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'4')
+	    shortcut = conv_block(base, 1024, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'23')
 	    base = Add(name='add'+n+'1')([x1, shortcut])
 
 	print('Stage 3:', base.shape)
 
-	# Stage (3 cnv_blocks)
+	# Stage 4 (3 cnv_blocks)
 	names = ['_4_a', '_4_b', '_4_c']
 	for n in names:
 	    x = conv_block(base, 512, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'1')
@@ -67,7 +86,7 @@ def resnet50(classes=classes):
 	out = GlobalAveragePooling2D(name='global_avg_1')(base)
 	out = Dense(classes, activation='softmax', name='dense_1')(out)
 
-	model = keras.Model(inputs=inp, outputs=out, name="resnet50_model")
+	model = keras.Model(inputs=inp, outputs=out, name="resnet101_model")
 
 	opt = keras.optimizers.Adam(lr=0.001)
 	model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
