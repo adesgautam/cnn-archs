@@ -11,7 +11,9 @@ def conv_block(base, filters, kernel_size, padding, strides, name):
 
 def resnet50v2(classes=1000):
 	inp = Input(shape=(224,224,3), name='input_layer')
-	x = Conv2D(64, kernel_size=(7,7), padding='valid', strides=(2,2), activation='relu', name='conv_0')(inp)
+	x = ZeroPadding2D(padding=(3, 3), name='conv0_pad')(inp)
+	x = Conv2D(64, kernel_size=(7,7), padding='valid', strides=(2,2), activation='relu', name='conv_0')(x)
+	x = ZeroPadding2D(padding=(1, 1), name='maxpool0_pad')(x)
 	base = MaxPool2D(pool_size=(3,3), strides=(2,2), name='maxpool_0')(x)
 
 	print('Stage 0:', base.shape)
