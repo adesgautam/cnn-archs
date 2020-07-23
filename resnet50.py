@@ -9,7 +9,7 @@ def conv_block(base, filters, kernel_size, padding, strides, name):
     x = Activation('relu', name='act'+name)(x)
     return x
 
-def resnet50(classes=classes):
+def resnet50(classes=1000):
 	inp = Input(shape=(224,224,3), name='input_layer')
 	x = Conv2D(64, kernel_size=(7,7), padding='valid', strides=(2,2), activation='relu', name='conv_0')(inp)
 	base = MaxPool2D(pool_size=(3,3), strides=(2,2), name='maxpool_0')(x)
@@ -23,6 +23,7 @@ def resnet50(classes=classes):
 	    x = conv_block(x, 64, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
 	    x1 = conv_block(x, 256, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
 	    
+	    # Shortcut
 	    x = Conv2D(256, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
 	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
@@ -37,6 +38,7 @@ def resnet50(classes=classes):
 	    x = conv_block(x, 128, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
 	    x1 = conv_block(x, 512, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
 	    
+	    # Shortcut
 	    x = Conv2D(512, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
 	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
@@ -51,6 +53,7 @@ def resnet50(classes=classes):
 	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
 	    x1 = conv_block(x, 1024, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
 	    
+	    # Shortcut
 	    x = Conv2D(1024, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
 	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
@@ -65,6 +68,7 @@ def resnet50(classes=classes):
 	    x = conv_block(x, 512, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
 	    x1 = conv_block(x, 2048, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
 	    
+	    # Shortcut
 	    x = Conv2D(2048, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
 	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])

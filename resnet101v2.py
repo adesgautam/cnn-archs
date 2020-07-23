@@ -21,12 +21,14 @@ def resnet101(classes=1000):
 	for n in names:
 	    x = conv_block(base, 64, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'1')
 	    x = conv_block(x, 64, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
-	    x1 = conv_block(x, 256, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
+	    x1 = Conv2D(256, kernel_size=(1,1), padding='same', strides=(1,1), name='conv'+n+'3')(x)
 	    
-	    x = Conv2D(256, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
-	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
+	    # shortcut
+	    x = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(base)
+	    x = Activation('relu', name='act'+n+'4')(x)
+	    shortcut = Conv2D(256, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
-	    base = Activation('relu', name='act'+name)(base)
+	    
 
 	print('Stage 1:', base.shape)
 	    
@@ -35,12 +37,13 @@ def resnet101(classes=1000):
 	for n in names:
 	    x = conv_block(base, 128, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'1')
 	    x = conv_block(x, 128, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
-	    x1 = conv_block(x, 512, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
+	    x1 = Conv2D(512, kernel_size=(1,1), padding='same', strides=(1,1), name='conv'+n+'3')(x)
 	    
-	    x = Conv2D(512, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
-	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
+	    # shortcut
+	    x = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(base)
+	    x = Activation('relu', name='act'+n+'4')(x)
+	    shortcut = Conv2D(512, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
-	    base = Activation('relu', name='act'+name)(base)
 
 	print('Stage 2:', base.shape)
 	    
@@ -68,26 +71,28 @@ def resnet101(classes=1000):
 	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'19')
 	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'20')
 	    x = conv_block(x, 256, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'21')
-	    x1 = conv_block(x, 1024, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'22')
+	    x1 = Conv2D(1024, kernel_size=(1,1), padding='same', strides=(1,1), name='conv'+n+'22')(x)
 	    
-	    x = Conv2D(1024, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
-	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
+	    # shortcut
+	    x = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(base)
+	    x = Activation('relu', name='act'+n+'4')(x)
+	    shortcut = Conv2D(1024, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
-	    base = Activation('relu', name='act'+name)(base)
 
 	print('Stage 3:', base.shape)
 
-	# Stage 4 (3 cnv_blocks)
+	# Stage (3 cnv_blocks)
 	names = ['_4_a', '_4_b', '_4_c']
 	for n in names:
 	    x = conv_block(base, 512, kernel_size=(1,1), padding='same', strides=(2,2), name=n+'1')
 	    x = conv_block(x, 512, kernel_size=(3,3), padding='same', strides=(1,1), name=n+'2')
-	    x1 = conv_block(x, 2048, kernel_size=(1,1), padding='same', strides=(1,1), name=n+'3')
+	    x1 = Conv2D(2048, kernel_size=(1,1), padding='same', strides=(1,1), name='conv'+n+'3')(x)
 	    
-	    x = Conv2D(2048, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(base)
-	    shortcut = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(x)
+	    # shortcut
+	    x = BatchNormalization(axis=3, epsilon=1.001e-5, name='batchnorm'+n+'4')(base)
+	    x = Activation('relu', name='act'+n+'4')(x)
+	    shortcut = Conv2D(2048, kernel_size=(1,1), padding='same', strides=(2,2), name='conv'+n+'4')(x)
 	    base = Add(name='add'+n+'1')([x1, shortcut])
-	    base = Activation('relu', name='act'+name)(base)
 
 	print('Stage 4:', base.shape)
 

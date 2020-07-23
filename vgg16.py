@@ -1,7 +1,7 @@
 import keras
 import tensorflow as tf
 
-def VGG16(classes=classes):
+def VGG16(classes=1000):
 	model = keras.models.Sequential()
 
 	model.add(keras.layers.Conv2D(64, kernel_size=(3,3), padding='same', activation='relu', input_shape=(224,224,3)))
